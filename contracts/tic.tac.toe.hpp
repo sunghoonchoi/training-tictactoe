@@ -15,7 +15,6 @@ public:
 
     struct [[eosio::table]] game
     {
-
         static constexpr uint16_t board_width = 3;
         static constexpr uint16_t board_height = board_width;
         
@@ -25,6 +24,8 @@ public:
         name host;
         name turn;              // = account name of host/ challenger
         name winner = none; // = none/ draw/ name of host/ name of challenger
+        asset host_deposit;
+        asset challenger_deposit;
 
         std::vector<uint8_t> board;
 
@@ -48,7 +49,9 @@ public:
 
     typedef eosio::multi_index<"games"_n, game> games;
 
-    [[eosio::action]]
+    [[eosio::on_notify("eosio.token::transfer")]]
+    void makegame(eosio::name host, eosio::name to, eosio::asset quantity, std::string memo);
+
     void create(const name &challenger, name &host);
     
     [[eosio::action]]

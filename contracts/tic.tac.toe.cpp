@@ -16,8 +16,17 @@ bool is_valid_movement(const uint16_t &row, const uint16_t &column, const std::v
     return is_valid;
 }
 
-void tic_tac_toe::create(const name &challenger, name &host) {
+void tic_tac_toe::makegame(eosio::name host, eosio::name to, eosio::asset quantity, std::string memo) {
     require_auth(host);
+
+    eosio::name challenger = eosio::name(memo);
+    check(challenger != host, "challenger shouldn't be the same as host");
+
+    create(memo, host);
+}
+
+void tic_tac_toe::create(const name &challenger, name &host, eosio::asset quantity) {
+    
     check(challenger != host, "challenger shouldn't be the same as host");
 
     // Check if game already exists
@@ -29,6 +38,7 @@ void tic_tac_toe::create(const name &challenger, name &host) {
         g.challenger = challenger;
         g.host = host;
         g.turn = host;
+        g.host_deposit = quantity;
     });
 }
 
